@@ -4,7 +4,7 @@ import fs from "fs";
 import crypto from "crypto";
 import path from "path";
 import fetch from "node-fetch";
-import { config } from "./config/env.mjs";
+import { config } from "./config/env-config.mjs";
 
 const app = express();
 const PORT = process.env.PORT || 10000;
