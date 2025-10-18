@@ -5,7 +5,11 @@ import express from "express";
 import multer from "multer";
 import morgan from "morgan";
 import fetch from "node-fetch";
-import pdfParse from "pdf-parse";
+let pdfParse;
+(async () => {
+  const mod = await import("pdf-parse");
+  pdfParse = mod.default || mod;
+})();
 import {
   PORT,
   OPENAI_API_KEY,
