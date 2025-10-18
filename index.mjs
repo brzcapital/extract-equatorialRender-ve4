@@ -81,19 +81,21 @@ ${texto}
     let respostaGPT;
     try {
       const response = await fetch("https://api.openai.com/v1/responses", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${OPENAI_API_KEY}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          model: modeloPrimario,
-          input: [{ role: "user", content: prompt }],
-          text: { format: { type: "json_object" } }
-        })
-      });
-      respostaGPT = await response.json();
-      if (!respostaGPT.output_text) throw new Error("Falha GPT primário");
+  method: "POST",
+  headers: {
+    "Authorization": `Bearer ${OPENAI_API_KEY}`,
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    model: modeloPrimario,
+    input: [{ role: "user", content: prompt }],
+    text: { format: "json_object" }  // 👈 corrigido: formato simples
+  })
+});
+respostaGPT = await response.json();
+
+const textoSaida = respostaGPT.output?.[0]?.content?.[0]?.text || null;
+if (!textoSaida) throw new Error("Sem texto retornado");
     } catch (err) {
       const fallback = await fetch("https://api.openai.com/v1/responses", {
         method: "POST",
@@ -117,10 +119,10 @@ ${texto}
     });
 
     res.json({
-      status: "ok",
-      nome: req.file.originalname,
-      extracao: respostaGPT.output_text || "Sem retorno válido"
-    });
+  status: "ok",
+  nome: req.file.originalname,
+  extracao: textoSaida
+});
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Falha ao processar a fatura." });
