@@ -17,7 +17,7 @@ app.post("/extract-pdf", upload.single("fatura"), async (req, res) => {
     const fileName = req.file.originalname;
     console.log(`📄 Fatura recebida: ${fileName}`);
 
-    // 🔧 Aqui entrará a integração real com GPT (extração de dados)
+    // Aqui você pode chamar a função real de extração (GPT)
     res.json({
       status: "ok",
       nome: fileName,
@@ -35,5 +35,36 @@ app.get("/health", (req, res) => {
 });
 
 // ✅ Logs simulados
-app.get("/logs", (req, res) =>
+app.get("/logs", (req, res) => {
+  try {
+    const logsPath = path.join(process.cwd(), "server.log");
+    if (fs.existsSync(logsPath)) {
+      const logs = fs.readFileSync(logsPath, "utf-8");
+      res.json({ logs: logs.split("\n").slice(-50) });
+    } else {
+      res.json({ error: "Nenhum log encontrado." });
+    }
+  } catch (e) {
+    res.status(500).json({ error: "Erro ao ler logs." });
+  }
+});
 
+// ✅ Listagem de rotas
+app.get("/routes", (req, res) => {
+  const routes = [];
+  app._router.stack.forEach((middleware) => {
+    if (middleware.route) {
+      routes.push({
+        path: middleware.route.path,
+        methods: Object.keys(middleware.route.methods),
+      });
+    }
+  });
+  res.json({ rotas: routes });
+});
+
+// ✅ Inicialização do servidor
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, () => {
+  console.log(`🚀 Servidor rodando na porta ${PORT}`);
+});
