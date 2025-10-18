@@ -18,8 +18,8 @@ app.post("/extract-pdf", upload.single("fatura"), async (req, res) => {
     console.log(`📄 Fatura recebida: ${fileName}`);
 
     // Aqui você pode chamar a função real de extração (GPT)
-import OpenAI from "openai";
-
+import pkg from "openai";
+const { OpenAI } = pkg;
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 app.post("/extract-pdf", upload.single("fatura"), async (req, res) => {
