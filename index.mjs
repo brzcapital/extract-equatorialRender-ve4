@@ -3,6 +3,8 @@ import multer from "multer";
 import fs from "fs";
 import path from "path";
 import { config } from "./config/env-config.mjs";
+import pkg from "openai";
+const { OpenAI } = pkg;
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
@@ -18,8 +20,8 @@ app.post("/extract-pdf", upload.single("fatura"), async (req, res) => {
     console.log(`📄 Fatura recebida: ${fileName}`);
 
     // Aqui você pode chamar a função real de extração (GPT)
-import pkg from "openai";
-const { OpenAI } = pkg;
+// 🚀 Importação dinâmica 100% compatível
+const { OpenAI } = await import("openai");
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 app.post("/extract-pdf", upload.single("fatura"), async (req, res) => {
